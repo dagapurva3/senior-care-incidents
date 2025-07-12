@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: senior_care_incidents
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=senior_care_incidents
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/firebase-credentials.json
+      - NODE_ENV=development
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - ./senior-care-incidents-firebase-adminsdk-fbsvc-2d6dfa3c64.json:/app/firebase-credentials.json
+    command: npm run dev
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_FIREBASE_PROJECT_ID=senior-care-incidents
+      - NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=senior-care-incidents.firebaseapp.com
+      - NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=senior-care-incidents.appspot.com
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+
+volumes:
+  postgres_data:

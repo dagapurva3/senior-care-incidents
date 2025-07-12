@@ -1,0 +1,5 @@
+node_modules/
+.env
+.next/
+senior-care-incidents-firebase-adminsdk-fbsvc-2d6dfa3c64.json
+dist/

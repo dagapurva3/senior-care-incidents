@@ -1,0 +1,26 @@
+{
+  "name": "senior-care-incidents",
+  "version": "1.0.0",
+  "description": "Modern incident tracking and management system for senior care facilities",
+  "scripts": {
+    "dev": "./dev.sh",
+    "start": "docker-compose -f docker-compose.dev.yml up",
+    "stop": "docker-compose down",
+    "build": "docker-compose -f docker-compose.dev.yml up --build",
+    "logs": "docker-compose -f docker-compose.dev.yml logs -f",
+    "frontend:dev": "cd frontend && npm run dev",
+    "backend:dev": "cd backend && npm run dev",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+  },
+  "keywords": [
+    "senior-care",
+    "incident-management",
+    "healthcare",
+    "react",
+    "nextjs",
+    "nodejs",
+    "typescript"
+  ],
+  "author": "CareTracker Team",
+  "license": "MIT"
+} 
