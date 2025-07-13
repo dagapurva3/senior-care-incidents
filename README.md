@@ -3,23 +3,6 @@
 
 A modern, AI-powered incident logging system for senior care facilities. Built with real-world needs in mind - staff can quickly log incidents, get AI summaries, and track everything through a clean, responsive interface.
 
-## What This Is
-
-This is a full-stack application I built to help senior care facilities manage incidents more effectively. Think of it as a digital incident book that's smart enough to summarize what happened and help staff track follow-ups.
-
-The system handles everything from falls and behavioral incidents to medication issues, with AI-powered summaries that help care teams understand what happened quickly.
-
-## Why I Built This
-
-Senior care facilities deal with incidents daily - falls, behavioral changes, medication issues, you name it. The old paper-based systems were clunky and didn't help staff understand patterns or track follow-ups effectively.
-
-So I built this to solve real problems:
-- **Quick logging** - Staff can log incidents in seconds
-- **AI summaries** - Get instant, clear summaries of what happened
-- **Smart tracking** - Follow incidents from open to resolved
-- **Easy searching** - Find past incidents quickly
-- **Export capabilities** - Generate reports for management
-
 ## Tech Stack
 
 I chose technologies that work well together and are production-ready:
