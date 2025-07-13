@@ -19,6 +19,28 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
+// Add response interceptor to handle common errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Handle specific error cases
+    if (error.response?.status === 500) {
+      const errorMessage = error.response.data?.error;
+      
+      // Handle summarization errors
+      if (errorMessage === "Failed to summarize incident") {
+        error.message = "There was an error in generating the summary";
+      }
+      // Handle other 500 errors
+      else if (errorMessage) {
+        error.message = errorMessage;
+      }
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
 export interface GetIncidentsParams {
   page?: number;
   limit?: number;

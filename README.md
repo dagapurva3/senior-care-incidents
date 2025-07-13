@@ -360,7 +360,6 @@ docker-compose -f docker-compose.prod.yml up -d
 - [x] **Hot reloading** for development
 - [x] **Docker containerization** with development setup
 - [x] **Advanced UI** with modern design
-- [x] **Email link authentication** (passwordless)
 - [x] **Enhanced validation** and error handling
 - [x] **Pagination** for large datasets
 - [x] **Real-time search** across descriptions
@@ -392,15 +391,6 @@ docker-compose -f docker-compose.prod.yml up -d
 - **Optimized queries** with proper joins
 - **Frontend optimization** with Next.js
 
-## Contributing
-
-I'd love to see this project grow! Here's how you can help:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
 
 ## License
 
