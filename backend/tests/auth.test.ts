@@ -1,3 +1,5 @@
+import '../src/models/user';
+import '../src/models/incident';
 import request from "supertest";
 import app from "../src/app";
 

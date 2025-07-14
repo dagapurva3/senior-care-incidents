@@ -5,6 +5,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import sequelize from "./config/database";
 import incidentRoutes from "./routes/incidents";
+import "./models/user";
 
 dotenv.config();
 

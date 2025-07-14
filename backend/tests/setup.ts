@@ -1,3 +1,4 @@
+import '../src/app';
 // Patch the Incident model mock so that Incident.init is a no-op and the model is a class with static methods
 jest.mock('../src/models/incident', () => {
     const mockIncident = {
@@ -54,23 +55,21 @@ jest.mock('../src/config/database', () => ({
 }));
 
 // Mock Firebase Admin
-jest.mock('firebase-admin', () => ({
+jest.mock('firebase-admin', () => {
+  const actual = jest.requireActual('firebase-admin');
+  return {
+    ...actual,
+    apps: [],
     initializeApp: jest.fn(),
     credential: {
-        applicationDefault: jest.fn(),
+      cert: jest.fn(),
+      applicationDefault: jest.fn(),
     },
-    auth: jest.fn(() => ({
-        verifyIdToken: jest.fn((token) => {
-            if (token === 'valid-token') {
-                return Promise.resolve({
-                    uid: 'test-user-id',
-                    email: 'test@example.com',
-                });
-            }
-            throw new Error('Invalid token');
-        }),
-    })),
-}));
+    auth: jest.fn().mockReturnValue({
+      verifyIdToken: jest.fn().mockResolvedValue({ uid: 'test-user-id', email: 'test@example.com' }),
+    }),
+  };
+});
 
 // Mock OpenAI
 jest.mock('openai', () => {

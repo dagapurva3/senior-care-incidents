@@ -1,26 +1,27 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/database";
+import User from "./user";
 
 interface IncidentAttributes {
   id: string;
   userId: string;
-  type: string;
+  type: "fall" | "behaviour" | "medication" | "other";
   description: string;
   summary?: string;
-  status: string;
+  status: "open" | "in_progress" | "resolved" | "closed";
   createdAt: Date;
   updatedAt: Date;
 }
 
 interface IncidentCreationAttributes extends Optional<IncidentAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
-class Incident extends Model implements IncidentAttributes {
+class Incident extends Model<IncidentAttributes, IncidentCreationAttributes> implements IncidentAttributes {
   public id!: string;
   public userId!: string;
-  public type!: string;
+  public type!: "fall" | "behaviour" | "medication" | "other";
   public description!: string;
   public summary?: string;
-  public status!: string;
+  public status!: "open" | "in_progress" | "resolved" | "closed";
   public createdAt!: Date;
   public updatedAt!: Date;
 }
@@ -35,19 +36,21 @@ Incident.init(
     userId: {
       type: DataTypes.STRING,
       allowNull: false,
+      references: {
+        model: User,
+        key: 'id',
+      },
+      onDelete: 'CASCADE',
     },
     type: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM("fall", "behaviour", "medication", "other"),
       allowNull: false,
-      validate: {
-        isIn: [["fall", "behaviour", "medication", "other"]],
-      },
     },
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
       validate: {
-        len: [10, 2000], // Minimum 10 characters, maximum 2000
+        len: [10, 2000],
       },
     },
     summary: {
@@ -55,12 +58,9 @@ Incident.init(
       allowNull: true,
     },
     status: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM("open", "in_progress", "resolved", "closed"),
       allowNull: false,
       defaultValue: "open",
-      validate: {
-        isIn: [["open", "in_progress", "resolved", "closed"]],
-      },
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -78,5 +78,7 @@ Incident.init(
     timestamps: true,
   }
 );
+
+Incident.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
 export default Incident;
