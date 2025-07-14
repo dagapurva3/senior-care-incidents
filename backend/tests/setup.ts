@@ -1,4 +1,31 @@
-import '../src/app';
+// Mock the database connection for tests FIRST
+jest.mock('../src/config/database', () => {
+  const { Sequelize } = jest.requireActual('sequelize');
+  return {
+    __esModule: true,
+    default: new Sequelize('sqlite::memory:'), // Use in-memory SQLite for tests
+  };
+});
+
+// Mock the sequelize instance itself
+jest.mock('sequelize', () => {
+  const ActualSequelize = jest.requireActual('sequelize');
+  return {
+    ...ActualSequelize,
+    Sequelize: class MockSequelize {
+      define = jest.fn();
+      constructor() { return this; }
+      authenticate = jest.fn().mockResolvedValue(true);
+      sync = jest.fn().mockResolvedValue(true);
+      close = jest.fn().mockResolvedValue(true);
+      model = jest.fn();
+    }
+  };
+});
+
+import '../src/models/user';
+import '../src/models/incident';
+import '../src/config/database';
 // Patch the Incident model mock so that Incident.init is a no-op and the model is a class with static methods
 jest.mock('../src/models/incident', () => {
     const mockIncident = {
@@ -41,18 +68,6 @@ jest.mock('../src/models/incident', () => {
         }
     };
 });
-
-// Mock the database connection for tests
-jest.mock('../src/config/database', () => ({
-    __esModule: true,
-    default: {
-        authenticate: jest.fn().mockResolvedValue(true),
-        sync: jest.fn().mockResolvedValue(true),
-        close: jest.fn().mockResolvedValue(true),
-        define: jest.fn(),
-        model: jest.fn(),
-    },
-}));
 
 // Mock Firebase Admin
 jest.mock('firebase-admin', () => {
@@ -117,4 +132,4 @@ beforeEach(() => {
 
 afterEach(() => {
     console.error = originalError;
-}); 
+});

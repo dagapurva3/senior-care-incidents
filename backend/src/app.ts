@@ -21,6 +21,11 @@ app.use(express.json());
 // Routes
 app.use("/api/incidents", incidentRoutes);
 
+// Test route for error handler integration test
+app.get("/api/trigger-error", (req, res, next) => {
+  next(new Error("Test error"));
+});
+
 // Health check
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });

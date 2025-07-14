@@ -4,3 +4,4 @@ node_modules/
 senior-care-incidents-firebase-adminsdk-fbsvc-2d6dfa3c64.json
 dist/
 .env.local
+.env.test

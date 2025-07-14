@@ -22,5 +22,8 @@
     "typescript"
   ],
   "author": "CareTracker Team",
-  "license": "MIT"
-} 
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^30.0.0"
+  }
+}
