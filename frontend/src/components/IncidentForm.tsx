@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { createIncident } from '../lib/api';
 import { Incident } from '../types';
+import { validateIncidentForm } from '../utils/incidentValidation';
 
 interface IncidentFormProps {
   onIncidentCreated: () => void;
@@ -27,6 +28,13 @@ export default function IncidentForm({ onIncidentCreated }: IncidentFormProps) {
     setLoading(true);
     setError('');
     setSuccess(false);
+
+    const validationError = validateIncidentForm({ type, description });
+    if (validationError) {
+      setError(validationError);
+      setLoading(false);
+      return;
+    }
 
     try {
       await createIncident({ type, description });

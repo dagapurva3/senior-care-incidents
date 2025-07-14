@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/database";
 import User from "./user";
 
-interface IncidentAttributes {
+export type IncidentAttributes = {
   id: string;
   userId: string;
   type: "fall" | "behaviour" | "medication" | "other";
@@ -11,7 +11,7 @@ interface IncidentAttributes {
   status: "open" | "in_progress" | "resolved" | "closed";
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 interface IncidentCreationAttributes extends Optional<IncidentAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 

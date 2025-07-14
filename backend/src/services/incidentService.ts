@@ -6,30 +6,15 @@ import {
   exportIncidentsByUser,
 } from '../repositories/incidentRepository';
 import { summarizeIncident } from './openai';
+import { validateIncidentData } from '../utils/incidentValidation';
+import { IncidentAttributes } from '../models/incident';
 
 const VALID_TYPES = ["fall", "behaviour", "medication", "other"];
 const VALID_STATUSES = ["open", "in_progress", "resolved", "closed"];
 
 export async function createIncidentService(userId: string, data: any) {
-  const { type, description, status = "open" } = data;
-
-  if (!type || !description) {
-    throw new Error("Type and description are required");
-  }
-  if (typeof type !== 'string' || typeof description !== 'string') {
-    throw new Error("Type and description must be strings");
-  }
-  if (description.trim().length < 10) {
-    throw new Error("Description must be at least 10 characters long");
-  }
-  if (!VALID_TYPES.includes(type)) {
-    throw new Error(`Type must be one of: ${VALID_TYPES.join(', ')}`);
-  }
-  if (!VALID_STATUSES.includes(status)) {
-    throw new Error(`Status must be one of: ${VALID_STATUSES.join(', ')}`);
-  }
-
-  return repoCreateIncident({ userId, type, description: description.trim(), status });
+  validateIncidentData({ ...data, userId } as Partial<IncidentAttributes>);
+  return repoCreateIncident({ userId, type: data.type, description: data.description.trim(), status: data.status || 'open' });
 }
 
 export async function listIncidentsService(userId: string, query: any) {
@@ -110,4 +95,4 @@ export async function summarizeIncidentService(userId: string, id: string) {
   incident.summary = summary;
   await incident.save();
   return incident;
-} 
+}
