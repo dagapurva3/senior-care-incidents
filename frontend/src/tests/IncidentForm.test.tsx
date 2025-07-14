@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import IncidentForm from './IncidentForm';
+import IncidentForm from '../components/IncidentForm';
 
 describe('IncidentForm', () => {
   it('renders all incident type buttons', () => {

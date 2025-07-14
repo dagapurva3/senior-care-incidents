@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import IncidentList from './IncidentList';
+import IncidentList from '../components/IncidentList';
 
 // Mock the API functions
 jest.mock('../lib/api', () => ({
