@@ -54,3 +54,21 @@ describe('Incident Controller', () => {
     spy.mockRestore();
   });
 });
+
+describe('Error Handling', () => {
+  it('should return 400 for invalid type', async () => {
+    const req: any = { user: { uid: 'user-id' }, body: { type: 'invalid', description: 'Valid description' } };
+    const res: any = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+    await createIncidentController(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.stringMatching(/Type must be one of/) }));
+  });
+
+  it('should return 400 for short description', async () => {
+    const req: any = { user: { uid: 'user-id' }, body: { type: 'fall', description: 'short' } };
+    const res: any = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+    await createIncidentController(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.stringMatching(/at least 10 characters/) }));
+  });
+});

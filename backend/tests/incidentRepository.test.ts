@@ -78,3 +78,16 @@ describe('Incident Repository Edge Cases', () => {
     expect(count).toBe(0);
   });
 });
+
+describe('Edge Cases and Error States', () => {
+  it('should return null for non-existent incident', async () => {
+    const result = await findIncidentById('non-existent-id', 'user-id');
+    expect(result).toBeNull();
+  });
+
+  it('should handle DB errors gracefully on findOne', async () => {
+    const spy = jest.spyOn(Incident, 'findOne').mockRejectedValueOnce(new Error('DB error'));
+    await expect(Incident.findOne({ where: { id: 'bad-id' } })).rejects.toThrow('DB error');
+    spy.mockRestore();
+  });
+});

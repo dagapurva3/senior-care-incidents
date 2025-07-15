@@ -113,4 +113,27 @@ describe('Incident Service', () => {
       await expect(summarizeIncidentService('user', '1')).rejects.toThrow('OpenAI error');
     });
   });
+
+  describe('Edge Cases and Error States', () => {
+    it('should throw error for invalid type', async () => {
+      await expect(createIncidentService('user-id', { type: 'invalid', description: 'Valid description' }))
+        .rejects.toThrow(/Type must be one of/);
+    });
+
+    it('should throw error for short description', async () => {
+      await expect(createIncidentService('user-id', { type: 'fall', description: 'short' }))
+        .rejects.toThrow(/at least 10 characters/);
+    });
+
+    it('should throw error for invalid status on update', async () => {
+      await expect(updateIncidentStatusService('user-id', 'incident-id', 'not_a_status'))
+        .rejects.toThrow(/Status must be one of/);
+    });
+
+    it('should throw error if incident not found on update', async () => {
+      jest.spyOn(incidentRepo, 'updateIncidentStatus').mockResolvedValue(null);
+      await expect(updateIncidentStatusService('user-id', 'incident-id', 'open'))
+        .rejects.toThrow(/Incident not found/);
+    });
+  });
 });
