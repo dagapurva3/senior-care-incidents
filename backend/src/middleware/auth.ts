@@ -1,6 +1,8 @@
 import { Response, NextFunction } from "express";
-import admin from "../config/firebase";
+import { getFirebaseAdmin } from "../config/firebase";
 import { User, AuthRequest } from "../types";
+
+const admin = getFirebaseAdmin();
 
 export const authenticateToken = async (
   req: AuthRequest,

@@ -7,12 +7,16 @@ import {
   summarizeIncidentService,
 } from '../services/incidentService';
 
+function handleError(res: Response, error: any, status: number = 400) {
+  res.status(status).json({ error: error.message || 'An unexpected error occurred.' });
+}
+
 export async function createIncidentController(req: Request, res: Response) {
   try {
     const incident = await createIncidentService(req.user!.uid, req.body);
     res.status(201).json(incident);
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    handleError(res, error, 400);
   }
 }
 
@@ -21,7 +25,7 @@ export async function listIncidentsController(req: Request, res: Response) {
     const result = await listIncidentsService(req.user!.uid, req.query);
     res.json(result);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error, 500);
   }
 }
 
@@ -32,7 +36,7 @@ export async function updateIncidentStatusController(req: Request, res: Response
     const incident = await updateIncidentStatusService(req.user!.uid, id, status);
     res.json(incident);
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    handleError(res, error, 400);
   }
 }
 
@@ -48,7 +52,7 @@ export async function exportIncidentsController(req: Request, res: Response) {
       res.json(result.incidents);
     }
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error, 500);
   }
 }
 
@@ -58,6 +62,6 @@ export async function summarizeIncidentController(req: Request, res: Response) {
     const incident = await summarizeIncidentService(req.user!.uid, id);
     res.json(incident);
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    handleError(res, error, 400);
   }
-} 
+}

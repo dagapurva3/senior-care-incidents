@@ -6,7 +6,7 @@ import {
   updateIncidentStatusController,
   exportIncidentsController,
   summarizeIncidentController,
-} from "../controllers/incidentController";
+} from "../controllers/incident";
 
 const router = express.Router();
 
