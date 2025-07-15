@@ -1,79 +1,30 @@
 'use client';
 
+import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
+import { useLogin } from '../hooks/useLogin';
 import { useState } from 'react';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
-import { auth } from '../lib/firebase';
+import { auth } from '@/lib/firebase';
 
 interface LoginProps {
   onLogin: () => void;
 }
 
 export default function Login({ onLogin }: LoginProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [emailLinkSent, setEmailLinkSent] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      if (isSignUp) {
-        await createUserWithEmailAndPassword(auth, email, password);
-      } else {
-        await signInWithEmailAndPassword(auth, email, password);
-      }
-      onLogin();
-    } catch (error: any) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    setError('');
-
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      onLogin();
-    } catch (error: any) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEmailLinkSignIn = async () => {
-    if (!email) {
-      setError('Please enter your email address');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-
-    try {
-      const actionCodeSettings = {
-        url: window.location.href,
-        handleCodeInApp: true,
-      };
-
-      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-      window.localStorage.setItem('emailForSignIn', email);
-      setEmailLinkSent(true);
-    } catch (error: any) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isSignUp,
+    setIsSignUp,
+    loading,
+    error,
+    emailLinkSent,
+    setEmailLinkSent,
+    handleSubmit,
+    handleGoogleSignIn,
+    handleEmailLinkSignIn,
+  } = useLogin(onLogin);
 
   // Check if user clicked email link
   useState(() => {

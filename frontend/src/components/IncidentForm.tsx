@@ -1,56 +1,24 @@
 'use client';
 
-import { useState } from 'react';
-import { createIncident } from '../lib/api';
+import { useIncidentForm } from '../hooks/useIncidentForm';
 import { Incident } from '../types';
-import { validateIncidentForm } from '../utils/incidentValidation';
 
 interface IncidentFormProps {
   onIncidentCreated: () => void;
 }
 
 export default function IncidentForm({ onIncidentCreated }: IncidentFormProps) {
-  const [type, setType] = useState('');
-  const [description, setDescription] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-
-  const incidentTypes = [
-    { value: 'fall', label: 'Fall', icon: '⚠️' },
-    { value: 'behaviour', label: 'Behaviour', icon: '😔' },
-    { value: 'medication', label: 'Medication', icon: '💊' },
-    { value: 'other', label: 'Other', icon: '📝' },
-  ];
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess(false);
-
-    const validationError = validateIncidentForm({ type, description });
-    if (validationError) {
-      setError(validationError);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      await createIncident({ type, description });
-      setType('');
-      setDescription('');
-      setSuccess(true);
-      onIncidentCreated();
-      
-      // Reset success message after 3 seconds
-      setTimeout(() => setSuccess(false), 3000);
-    } catch (error: any) {
-      setError(error.message || 'Failed to create incident');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    type,
+    setType,
+    description,
+    setDescription,
+    loading,
+    error,
+    success,
+    incidentTypes,
+    handleSubmit,
+  } = useIncidentForm(onIncidentCreated);
 
   return (
     <div className="space-y-6">
