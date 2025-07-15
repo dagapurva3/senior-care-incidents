@@ -6,69 +6,69 @@ const mockReq: any = { body: {}, params: {}, query: {}, user: { uid: 'test-user-
 const mockRes: any = { status: jest.fn().mockReturnThis(), json: jest.fn(), setHeader: jest.fn(), send: jest.fn() };
 
 beforeEach(() => {
-  jest.clearAllMocks();
-  mockRes.status.mockClear();
-  mockRes.json.mockClear();
-  mockRes.setHeader.mockClear();
-  mockRes.send.mockClear();
+    jest.clearAllMocks();
+    mockRes.status.mockClear();
+    mockRes.json.mockClear();
+    mockRes.setHeader.mockClear();
+    mockRes.send.mockClear();
 });
 
 describe('Incident Controller', () => {
-  it('should return 400 for missing required fields in create', async () => {
-    mockReq.body = {};
-    await createIncidentController(mockReq, mockRes);
-    expect(mockRes.status).toHaveBeenCalledWith(400);
-  });
+    it('should return 400 for missing required fields in create', async () => {
+        mockReq.body = {};
+        await createIncidentController(mockReq, mockRes);
+        expect(mockRes.status).toHaveBeenCalledWith(400);
+    });
 
-  it('should return 201 for valid incident creation', async () => {
-    mockReq.body = { type: 'fall', description: 'desc for controller', status: 'open' };
-    Incident.create = jest.fn().mockResolvedValue({ ...mockReq.body, id: 1, userId: mockReq.user.uid });
-    await createIncidentController(mockReq, mockRes);
-    expect(mockRes.status).toHaveBeenCalledWith(201);
-    expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ type: 'fall' }));
-  });
+    it('should return 201 for valid incident creation', async () => {
+        mockReq.body = { type: 'fall', description: 'desc for controller', status: 'open' };
+        Incident.create = jest.fn().mockResolvedValue({ ...mockReq.body, id: 1, userId: mockReq.user.uid });
+        await createIncidentController(mockReq, mockRes);
+        expect(mockRes.status).toHaveBeenCalledWith(201);
+        expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ type: 'fall' }));
+    });
 
-  it('should return 500 for error in list', async () => {
-    mockReq.query = {};
-    const spy = jest.spyOn(incidentService, 'listIncidentsService').mockRejectedValueOnce(new Error('DB error'));
-    await listIncidentsController(mockReq, mockRes);
-    expect(mockRes.status).toHaveBeenCalledWith(500);
-    spy.mockRestore();
-  });
+    it('should return 500 for error in list', async () => {
+        mockReq.query = {};
+        const spy = jest.spyOn(incidentService, 'listIncidentsService').mockRejectedValueOnce(new Error('DB error'));
+        await listIncidentsController(mockReq, mockRes);
+        expect(mockRes.status).toHaveBeenCalledWith(500);
+        spy.mockRestore();
+    });
 
-  it('should return 400 for invalid status update', async () => {
-    mockReq.params = { id: 1 };
-    mockReq.body = { status: 'bad' };
-    jest.spyOn(Incident, 'update').mockRejectedValueOnce(new Error('Invalid status'));
-    await updateIncidentStatusController(mockReq, mockRes);
-    expect(mockRes.status).toHaveBeenCalledWith(400);
-  });
+    it('should return 400 for invalid status update', async () => {
+        mockReq.params = { id: 1 };
+        mockReq.body = { status: 'bad' };
+        jest.spyOn(Incident, 'update').mockRejectedValueOnce(new Error('Invalid status'));
+        await updateIncidentStatusController(mockReq, mockRes);
+        expect(mockRes.status).toHaveBeenCalledWith(400);
+    });
 
-  it('should export incidents as CSV', async () => {
-    mockReq.query = { format: 'csv' };
-    const result = { csv: 'ID,Type,Description\n1,fall,desc' };
-    const spy = jest.spyOn(incidentService, 'exportIncidentsService').mockResolvedValueOnce(result);
-    await exportIncidentsController(mockReq, mockRes);
-    expect(mockRes.setHeader).toHaveBeenCalledWith('Content-Type', 'text/csv');
-    expect(mockRes.send).toHaveBeenCalledWith(result.csv);
-    spy.mockRestore();
-  });
+    it('should export incidents as CSV', async () => {
+        mockReq.query = { format: 'csv' };
+        const result = { csv: 'ID,Type,Description\n1,fall,desc' };
+        const spy = jest.spyOn(incidentService, 'exportIncidentsService').mockResolvedValueOnce(result);
+        await exportIncidentsController(mockReq, mockRes);
+        expect(mockRes.setHeader).toHaveBeenCalledWith('Content-Type', 'text/csv');
+        expect(mockRes.send).toHaveBeenCalledWith(result.csv);
+        spy.mockRestore();
+    });
 });
 
 describe('Error Handling', () => {
-  it('should return 400 for invalid type', async () => {
-    const req: any = { user: { uid: 'user-id' }, body: { type: 'invalid', description: 'Valid description' } };
-    const res: any = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-    await createIncidentController(req, res);
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.stringMatching(/Type must be one of/) }));
-  });
+    it('should return 400 for invalid type', async () => {
+        const req: any = { user: { uid: 'user-id' }, body: { type: 'invalid', description: 'Valid description' } };
+        const res: any = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+        await createIncidentController(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.stringMatching(/Type must be one of/) }));
+    });
 
-  it('should return 400 for short description', async () => {
-    const req: any = { user: { uid: 'user-id' }, body: { type: 'fall', description: 'short' } };
-    const res: any = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-    await createIncidentController(req, res);
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.stringMatching(/at least 10 characters/) }));
-  });
+    it('should return 400 for short description', async () => {
+        const req: any = { user: { uid: 'user-id' }, body: { type: 'fall', description: 'short' } };
+        const res: any = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+        await createIncidentController(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.stringMatching(/at least 10 characters/) }));
+    });
 });
