@@ -132,9 +132,6 @@ jobs:
         run: cd frontend && npm test
 ```
 
-## Contributing
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
-
 ---
 
 For any questions or issues, please open an issue or pull request.
