@@ -66,15 +66,19 @@ describe('IncidentForm', () => {
     await waitFor(() => {
       expect(onIncidentCreated).toHaveBeenCalled();
     });
-    expect(screen.getByLabelText(/Incident Description/i)).toHaveValue('');
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Incident Description/i)).toHaveValue('');
+    });
   });
 
-  it('shows validation error if description is too short', () => {
+  it('shows validation error if description is too short', async () => {
     render(<IncidentForm onIncidentCreated={jest.fn()} />);
     fireEvent.click(screen.getByText('Fall'));
     fireEvent.change(screen.getByLabelText(/Incident Description/i), { target: { value: 'Short' } });
     fireEvent.blur(screen.getByLabelText(/Incident Description/i));
-    expect(screen.getByText(/Minimum 10 characters/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/Minimum 10 characters/i)).toBeInTheDocument();
+    });
   });
 
   it('shows success message after submit', async () => {
@@ -96,7 +100,9 @@ describe('IncidentForm', () => {
     fireEvent.click(screen.getByText('Fall'));
     fireEvent.change(screen.getByLabelText(/Incident Description/i), { target: { value: 'A valid description for testing' } });
     fireEvent.click(screen.getByRole('button', { name: /Report Incident/i }));
-    expect(screen.getByText(/Submitting/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/Submitting/i)).toBeInTheDocument();
+    });
   });
 
   it('shows error for invalid type', async () => {

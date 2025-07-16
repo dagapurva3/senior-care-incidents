@@ -32,8 +32,8 @@ export default function IncidentForm({ onIncidentCreated }: IncidentFormProps) {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <p className="text-sm text-red-800">{error}</p>
+        <div data-testid="form-error" className="text-red-600 mb-4">
+          {error}
         </div>
       )}
 

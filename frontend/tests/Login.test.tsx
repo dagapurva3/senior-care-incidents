@@ -8,7 +8,9 @@ describe('Login', () => {
     render(<Login onLogin={jest.fn()} />);
     expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
-    const signInButton = screen.getByRole('button', { name: /Sign In/i, hidden: false });
+    const signInButton = screen.getAllByRole('button', { name: /Sign In/i }).find(
+      (btn) => btn.getAttribute('type') === 'submit'
+    );
     expect(signInButton).toBeInTheDocument();
     expect(signInButton).toHaveAttribute('type', 'submit');
   });
@@ -18,8 +20,10 @@ describe('Login', () => {
     render(<Login onLogin={onLogin} />);
     fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'test@example.com' } });
     fireEvent.change(screen.getByLabelText(/Password/i), { target: { value: 'password123' } });
-    const signInButton = screen.getByRole('button', { name: /Sign In/i, hidden: false });
-    fireEvent.click(signInButton);
+    const signInButton = screen.getAllByRole('button', { name: /Sign In/i }).find(
+      (btn) => btn.getAttribute('type') === 'submit'
+    );
+    fireEvent.click(signInButton!);
     expect(onLogin).toHaveBeenCalledWith('test@example.com', 'password123');
   });
 
@@ -27,8 +31,10 @@ describe('Login', () => {
     render(<Login onLogin={jest.fn()} />);
     fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'bad' } });
     fireEvent.change(screen.getByLabelText(/Password/i), { target: { value: '' } });
-    const signInButton = screen.getByRole('button', { name: /Sign In/i, hidden: false });
-    fireEvent.click(signInButton);
+    const signInButton = screen.getAllByRole('button', { name: /Sign In/i }).find(
+      (btn) => btn.getAttribute('type') === 'submit'
+    );
+    fireEvent.click(signInButton!);
     expect(screen.getByText(/Invalid email or password/i)).toBeInTheDocument();
   });
 
@@ -36,8 +42,10 @@ describe('Login', () => {
     render(<Login onLogin={jest.fn()} />);
     fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: '' } });
     fireEvent.change(screen.getByLabelText(/Password/i), { target: { value: '' } });
-    const signInButton = screen.getByRole('button', { name: /Sign In/i, hidden: false });
-    fireEvent.click(signInButton);
+    const signInButton = screen.getAllByRole('button', { name: /Sign In/i }).find(
+      (btn) => btn.getAttribute('type') === 'submit'
+    );
+    fireEvent.click(signInButton!);
     expect(screen.getByText(/required/i)).toBeInTheDocument();
   });
 
@@ -45,8 +53,10 @@ describe('Login', () => {
     render(<Login onLogin={jest.fn()} />);
     fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'test@example.com' } });
     fireEvent.change(screen.getByLabelText(/Password/i), { target: { value: 'password123' } });
-    const signInButton = screen.getByRole('button', { name: /Sign In/i, hidden: false });
-    fireEvent.click(signInButton);
+    const signInButton = screen.getAllByRole('button', { name: /Sign In/i }).find(
+      (btn) => btn.getAttribute('type') === 'submit'
+    );
+    fireEvent.click(signInButton!);
     expect(screen.getByText(/Signing In/i)).toBeInTheDocument();
   });
 });

@@ -76,9 +76,11 @@ describe('IncidentList', () => {
       pagination: { currentPage: 1, totalPages: 1, totalItems: 1, itemsPerPage: 10, hasNextPage: false, hasPrevPage: false },
     });
     render(<IncidentList onIncidentUpdated={mockOnIncidentUpdated} />);
-    fireEvent.change(screen.getByLabelText(/Type/i), { target: { value: 'fall' } });
-    fireEvent.change(screen.getByLabelText(/Status/i), { target: { value: 'open' } });
-    await waitFor(async () => {
+    await waitFor(() => {
+      fireEvent.change(screen.getByLabelText(/Type/i), { target: { value: 'fall' } });
+      fireEvent.change(screen.getByLabelText(/Status/i), { target: { value: 'open' } });
+    });
+    await waitFor(() => {
       expect(screen.getByText('Fall Incident')).toBeInTheDocument();
     });
   });
@@ -91,11 +93,13 @@ describe('IncidentList', () => {
     });
     updateIncidentStatus.mockResolvedValue({ id: '1', status: 'resolved' });
     render(<IncidentList onIncidentUpdated={mockOnIncidentUpdated} />);
-    await waitFor(async () => {
+    await waitFor(() => {
       expect(screen.getByText('Fall Incident')).toBeInTheDocument();
     });
-    fireEvent.click(screen.getByText(/Update Status/i));
-    await waitFor(async () => {
+    await waitFor(() => {
+      fireEvent.click(screen.getByTestId('update-status-btn'));
+    });
+    await waitFor(() => {
       expect(mockOnIncidentUpdated).toHaveBeenCalled();
     });
   });
@@ -108,12 +112,14 @@ describe('IncidentList', () => {
     });
     summarizeIncident.mockResolvedValue('summary');
     render(<IncidentList onIncidentUpdated={mockOnIncidentUpdated} />);
-    await waitFor(async () => {
+    await waitFor(() => {
       expect(screen.getByText('Fall Incident')).toBeInTheDocument();
     });
-    fireEvent.click(screen.getByText(/Generate Summary/i));
-    await waitFor(async () => {
-      expect(screen.getByText('summary')).toBeInTheDocument();
+    await waitFor(() => {
+      fireEvent.click(screen.getByText(/Generate Summary/i));
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('incident-summary')).toBeInTheDocument();
     });
   });
 

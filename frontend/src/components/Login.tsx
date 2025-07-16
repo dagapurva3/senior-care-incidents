@@ -3,7 +3,7 @@
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
 import { useLogin } from '../hooks/useLogin';
 import { useState } from 'react';
-import { auth } from '@/lib/firebase';
+import { auth } from '../lib/firebase';
 
 interface LoginProps {
   onLogin: () => void;

@@ -50,7 +50,7 @@ export default function IncidentList({ onIncidentUpdated }: IncidentListProps) {
 
   if (loading && incidents.length === 0) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-12" data-testid="loading-spinner">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
         <p className="mt-4 text-gray-600">Loading incidents...</p>
       </div>
@@ -336,7 +336,7 @@ export default function IncidentList({ onIncidentUpdated }: IncidentListProps) {
 
               {/* Summary */}
               {incident.summary && (
-                <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg" data-testid="incident-summary">
                   <h4 className="text-sm font-medium text-blue-800 mb-2">AI Summary</h4>
                   <p className="text-blue-700 text-sm leading-relaxed">{incident.summary}</p>
                 </div>
@@ -379,6 +379,14 @@ export default function IncidentList({ onIncidentUpdated }: IncidentListProps) {
                       )}
                     </button>
                   )}
+
+                  {/* Update Status Button */}
+                  <button
+                    data-testid="update-status-btn"
+                    className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >
+                    Update Status
+                  </button>
                 </div>
               </div>
             </div>
