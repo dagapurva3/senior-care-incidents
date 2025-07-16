@@ -16,13 +16,17 @@ beforeEach(() => {
 describe('Incident Controller', () => {
     it('should return 400 for missing required fields in create', async () => {
         mockReq.body = {};
+        // Mock the service to throw the expected error
+        jest.spyOn(incidentService, 'createIncidentService').mockRejectedValueOnce(new Error('Description must be at least 10 characters long'));
         await createIncidentController(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(400);
+        expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.stringMatching(/Description must be at least 10 characters long/) }));
     });
 
     it('should return 201 for valid incident creation', async () => {
         mockReq.body = { type: 'fall', description: 'desc for controller', status: 'open' };
-        Incident.create = jest.fn().mockResolvedValue({ ...mockReq.body, id: 1, userId: mockReq.user.uid });
+        // Mock the service to return the expected incident
+        jest.spyOn(incidentService, 'createIncidentService').mockResolvedValueOnce({ ...mockReq.body, id: 1, userId: mockReq.user.uid });
         await createIncidentController(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(201);
         expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ type: 'fall' }));
@@ -39,9 +43,10 @@ describe('Incident Controller', () => {
     it('should return 400 for invalid status update', async () => {
         mockReq.params = { id: 1 };
         mockReq.body = { status: 'bad' };
-        jest.spyOn(Incident, 'update').mockRejectedValueOnce(new Error('Invalid status'));
+        jest.spyOn(incidentService, 'updateIncidentStatusService').mockRejectedValueOnce(new Error('Status must be one of: open, in_progress, resolved, closed'));
         await updateIncidentStatusController(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(400);
+        expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.stringMatching(/Status must be one of/) }));
     });
 
     it('should export incidents as CSV', async () => {

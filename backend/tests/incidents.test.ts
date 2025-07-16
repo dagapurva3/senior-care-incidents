@@ -7,12 +7,15 @@ import sequelize from "../src/config/database";
 
 // Mock Firebase Admin
 jest.mock("../src/config/firebase", () => ({
-  auth: () => ({
-    verifyIdToken: jest.fn().mockResolvedValue({
-      uid: "test-user-id",
-      email: "test@example.com",
+  getFirebaseAdmin: jest.fn(() => ({
+    auth: () => ({
+      verifyIdToken: jest.fn().mockResolvedValue({
+        uid: "test-user-id",
+        email: "test@example.com",
+        name: "Test User"
+      }),
     }),
-  }),
+  })),
 }));
 
 // Mock OpenAI

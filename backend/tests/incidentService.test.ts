@@ -24,11 +24,11 @@ describe('Incident Service', () => {
       expect(result).toMatchObject({ ...data, userId });
     });
     it('should throw if type or description is missing', async () => {
-      await expect(createIncidentService(userId, { type: 'fall' })).rejects.toThrow('Type and description are required');
-      await expect(createIncidentService(userId, { description: 'desc' })).rejects.toThrow('Type and description are required');
+      await expect(createIncidentService(userId, { type: 'fall' })).rejects.toThrow('Description must be at least 10 characters long');
+      await expect(createIncidentService(userId, { description: 'desc' })).rejects.toThrow('Type must be one of: fall, behaviour, medication, other');
     });
     it('should throw if type or description is not a string', async () => {
-      await expect(createIncidentService(userId, { type: 123, description: 456 })).rejects.toThrow('Type and description must be strings');
+      await expect(createIncidentService(userId, { type: 123, description: 456 })).rejects.toThrow('Type must be one of: fall, behaviour, medication, other');
     });
     it('should throw if description is too short', async () => {
       await expect(createIncidentService(userId, { type: 'fall', description: 'short' })).rejects.toThrow('Description must be at least 10 characters long');

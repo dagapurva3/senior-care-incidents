@@ -1,12 +1,16 @@
 import { authenticateToken } from '../src/middleware/auth';
 import { getFirebaseAdmin } from '../src/config/firebase';
 
-jest.mock('../src/config/firebase', () => ({
-    getFirebaseAdmin: jest.fn(() => ({
-        auth: () => ({
-            verifyIdToken: jest.fn(),
-        }),
-    })),
+jest.mock("../src/config/firebase", () => ({
+  getFirebaseAdmin: jest.fn(() => ({
+    auth: () => ({
+      verifyIdToken: jest.fn().mockResolvedValue({
+        uid: "test-user-id",
+        email: "test@example.com",
+        name: "Test User"
+      }),
+    }),
+  })),
 }));
 
 describe('Auth Middleware', () => {

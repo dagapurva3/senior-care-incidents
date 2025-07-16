@@ -67,7 +67,7 @@ describe('Incident Repository Edge Cases', () => {
   });
 
   it('should return null for non-existent incident', async () => {
-    (Incident.findOne as jest.Mock).mockResolvedValueOnce(null);
+    jest.spyOn(Incident, 'findOne').mockResolvedValueOnce(null);
     const result = await Incident.findOne({ where: { id: 999 } });
     expect(result).toBeNull();
   });
@@ -81,6 +81,7 @@ describe('Incident Repository Edge Cases', () => {
 
 describe('Edge Cases and Error States', () => {
   it('should return null for non-existent incident', async () => {
+    jest.spyOn(Incident, 'findOne').mockResolvedValueOnce(null);
     const result = await findIncidentById('non-existent-id', 'user-id');
     expect(result).toBeNull();
   });

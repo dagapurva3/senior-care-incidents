@@ -4,20 +4,25 @@ import request from "supertest";
 import app from "../src/app";
 
 // Mock Firebase Admin
-const mockVerifyIdToken = jest.fn();
 jest.mock("../src/config/firebase", () => ({
-  auth: () => ({
-    verifyIdToken: mockVerifyIdToken,
-  }),
+  getFirebaseAdmin: jest.fn(() => ({
+    auth: () => ({
+      verifyIdToken: jest.fn().mockResolvedValue({
+        uid: "test-user-id",
+        email: "test@example.com",
+        name: "Test User"
+      }),
+    }),
+  })),
 }));
 
 describe("Auth Middleware", () => {
   beforeEach(() => {
-    mockVerifyIdToken.mockClear();
+    jest.clearAllMocks();
   });
 
   it("should authenticate valid token", async () => {
-    mockVerifyIdToken.mockResolvedValue({
+    const mockVerifyIdToken = jest.fn().mockResolvedValue({
       uid: "test-user-id",
       email: "test@example.com",
     });
@@ -29,7 +34,7 @@ describe("Auth Middleware", () => {
   });
 
   it("should reject invalid token", async () => {
-    mockVerifyIdToken.mockRejectedValue(new Error("Invalid token"));
+    const mockVerifyIdToken = jest.fn().mockRejectedValue(new Error("Invalid token"));
 
     await request(app)
       .get("/api/incidents")
